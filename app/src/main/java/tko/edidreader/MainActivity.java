@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         infoListView = (ListView) findViewById(R.id.edidInfoListView);
+        adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             String value = entry.getValue();
             list.add(key + ": " + value);
         }
-        
+
         infoListView.setAdapter(adapter);
     }
 
@@ -96,6 +97,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         infoListView.setAdapter(adapter);
+    }
+
+    /* action performed when raw data menu item is pressed*/
+    public void showRaw(MenuItem item){
+
+    }
+
+    /*action performed when settings menu item is pressed */
+    public void showSettings(MenuItem item) {
+
     }
 
     /* action when shareButton is clicked */
@@ -111,14 +122,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*action when RawData list item is clicked*/
-    public void showRawData(){
 
-    }
-    /*action when setting list item is clicked*/
-    public void showSettings() {
-
-    }
     /* creates csv file*/
     private void makeFile() {
         try {
@@ -144,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
 
 
 }
