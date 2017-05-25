@@ -101,7 +101,11 @@ public class MainActivity extends AppCompatActivity {
 
     /* action performed when raw data menu item is pressed*/
     public void showRaw(MenuItem item){
-
+        RawData rawDataFragment = new RawData();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.raw_data_frag,rawDataFragment)
+                .commit();
     }
 
     /*action performed when settings menu item is pressed */
