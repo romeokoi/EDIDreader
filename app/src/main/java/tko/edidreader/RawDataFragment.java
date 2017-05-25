@@ -12,12 +12,12 @@ import android.view.ViewGroup;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link RawData.OnFragmentInteractionListener} interface
+ * {@link RawDataFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link RawData#newInstance} factory method to
+ * Use the {@link RawDataFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RawData extends Fragment {
+public class RawDataFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -29,12 +29,12 @@ public class RawData extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public RawData() {
+    public RawDataFragment() {
         // Required empty public constructor
     }
 
-    public static RawData newInstance() {
-        RawData fragment = new RawData();
+    public static RawDataFragment newInstance() {
+        RawDataFragment fragment = new RawDataFragment();
 
         return fragment;
     }

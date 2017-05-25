@@ -1,16 +1,11 @@
 package tko.edidreader;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Environment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -18,14 +13,11 @@ import android.widget.ListView;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -101,16 +93,14 @@ public class MainActivity extends AppCompatActivity {
 
     /* action performed when raw data menu item is pressed*/
     public void showRaw(MenuItem item){
-        RawData rawDataFragment = new RawData();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.raw_data_frag,rawDataFragment)
-                .commit();
+        Log.i("debug","RAWWWW");
+        Intent i = new Intent(this,ActionSettingFragActivity.class);
+        startActivity(i);
     }
 
     /*action performed when settings menu item is pressed */
     public void showSettings(MenuItem item) {
-
+        Log.i("debug","GOT IT");
     }
 
     /* action when shareButton is clicked */
