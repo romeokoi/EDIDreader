@@ -11,11 +11,11 @@
         app:showAsAction="never"
         android:onClick="showRaw" > </item>
 
-
     <item
         android:id="@+id/setting_list0"
         android:orderInCategory="1"
         android:title="@string/action_list0"
+        android:onClick="showSettings"
         />
 
 </menu>
