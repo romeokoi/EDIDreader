@@ -1,6 +1,10 @@
 package tko.edidreader;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -31,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
     private String productCode;
     private String serialNumber;
     private String ym;
+    public String email;
+    public String phoneNumber;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +49,18 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         this.displayInformation();
+
+        SharedPreferences details = getSharedPreferences("details", MODE_PRIVATE);
+        SharedPreferences.Editor edt =  details.edit();
+        if (details.getString("email","empty").equals("empty")) {
+            edt.putString("email", "Email");
+            edt.putString("phoneNumber", "Phone Number");
+            edt.apply();
+        }
+        else {
+            email = details.getString("email",null);
+            phoneNumber = details.getString("phoneNumber",null);
+        }
 
         Log.i("debug",  android.os.Environment.getExternalStorageDirectory().getAbsolutePath());
     }
@@ -93,14 +112,20 @@ public class MainActivity extends AppCompatActivity {
 
     /* action performed when raw data menu item is pressed*/
     public void showRaw(MenuItem item){
-        Log.i("debug","RAWWWW");
-        Intent i = new Intent(this,ActionSettingFragActivity.class);
+        Log.i("debug","showRaw");
+        Intent i = new Intent(this,SecondActivity.class);
+        i.putExtra("fragType","raw");
         startActivity(i);
     }
 
     /*action performed when settings menu item is pressed */
     public void showSettings(MenuItem item) {
-        Log.i("debug","GOT IT");
+        Log.i("debug","showSettings");
+        Intent i = new Intent(this,SecondActivity.class);
+        i.putExtra("fragType","setting");
+        startActivity(i);
+
+
     }
 
     /* action when shareButton is clicked */
@@ -147,3 +172,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 }
+
+
+

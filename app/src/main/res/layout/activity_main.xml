@@ -38,5 +38,7 @@
         android:onClick="shareInfo"
         android:text="@string/share_button" />
 
+
+
 </LinearLayout>
 

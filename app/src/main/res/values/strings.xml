@@ -3,5 +3,7 @@
     <string name="share_button">Share</string>
     <string name="action_settings">Raw Data</string>
     <string name="action_list0">Settings</string>
+    <string name="email">Email</string>
+    <string name="phone_number">Phone Number</string>
 
 </resources>
