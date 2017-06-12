@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">EDIDreader</string>
     <string name="share_button">Share</string>
+    <string name="connect_button">Connect</string>
     <string name="action_settings">Raw Data</string>
     <string name="action_list0">Settings</string>
     <string name="email">Email</string>
