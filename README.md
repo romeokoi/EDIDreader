@@ -47,7 +47,7 @@ sudo service bluetooth status
 ```
 status should say “Running”:<br>
 
-To permanently set the bluetooth name of the pi:
+To permanently set the bluetooth name of the pi to "raspberrypi":
 ```bash
 sudo nano /etc/machine-info
 ```
@@ -55,7 +55,13 @@ And in it write:
 ```bash
 PRETTY_HOSTNAME=raspberrypi
 ```
-exit out and Save by Control-x, Y, Enter<br><br>
+exit out and Save by Control-x, Y, Enter<br>
+if you don't want to change name you must change the line in MainActivity:
+```java
+if(device.getName().equals("raspberrypi"))
+``` 
+from "raspberrypi" to whatever name<br><br>
+
 We will now pair your android device with the raspberry pi:
 ```bash
 bluetoothctl
