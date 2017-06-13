@@ -28,7 +28,7 @@ To perform a headless setup of Raspberry pi zero w: http://blog.remmelt.com/2017
 Then install image to sd card: https://www.raspberrypi.org/documentation/installation/installing-images/README.md<br>
 ```bash
 ssh pi@raspberrypi.local
-pi@raspberrypi password: rasbperry
+pi@raspberrypi.local's password: rasbperry
 ```
 Update and upgrade installed packages:
 ```bash
