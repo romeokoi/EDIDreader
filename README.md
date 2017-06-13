@@ -34,18 +34,18 @@ Update and upgrade installed packages:
 sudo apt-get update
 sudo apt-get upgrade
 ```
-Install pybluez for python bluetooth functionality
+Install pybluez for python bluetooth functionality:
 ```bash
 sudo apt-get install python-bluez
 ```
 
-Setup bluetooth for raspberry pi<br>
+Setup bluetooth for raspberry pi:<br>
 ```bash
 sudo apt-get install pi-bluetooth
 sudo reboot
 sudo service bluetooth status 
 ```
-status should say “Running”<br>
+status should say “Running”:<br>
 
 To permanently set the bluetooth name of the pi:
 ```bash
@@ -55,7 +55,7 @@ And in it write:
 ```bash
 PRETTY_HOSTNAME=raspberrypi
 ```
-exit out and Save by Control-x, Y, Enter<br>
+exit out and Save by Control-x, Y, Enter<br><br>
 We will now pair your android device with the raspberry pi:
 ```bash
 bluetoothctl
@@ -76,9 +76,8 @@ pair [MAC ADDRESS YOU COPY FROM THE SCAN]
 ``` 
 OR you click the “raspberrypi” on your android device
  
-A popup will come up on your android device and you click yes
-On your pi, 
-type "yes" to pair
+A popup will come up on your android device and you click yes.<br>
+On your pi, type "yes" to pair
 ```bash
 trust [MAC ADDRESS YOU COPY]
 scan off
