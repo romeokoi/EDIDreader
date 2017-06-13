@@ -14,8 +14,8 @@ git clone git@github.com:tko22/EDIDreader.git .
 For more information on running the app: https://developer.android.com/training/basics/firstapp/running-app.html
 
 ### Requirements for installation
-Android Studio 2.3 https://developer.android.com/studio/index.html<br>
-Android Phone with Android 6.0/Android API 23 or above with USB debugging on in developer options <br>
+- Android Studio 2.3 https://developer.android.com/studio/index.html<br>
+- Android Phone with Android 6.0/Android API 23 or above with USB debugging on in developer options <br>
 
 ### raspberryPiScript/BLServer.py
 this python script must be ran in the raspberry pi. It acts as a bluetooth server and continuously searches for a connection with the android phone. Note: you must be paired with the raspberry pi before you can connect to it. The script will get the EDID display data from the raspberry pi and parse information from the byte file and send it to the phone upon requested. 
