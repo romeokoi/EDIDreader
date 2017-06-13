@@ -4,7 +4,7 @@ An Android Application that gets parsed EDID displah information connected to a 
 ## Installation from Source 
 To install the latest development version from source:
 ```bash
-mkdir -p ~/edidreader && cd ~/edidreader
+mkdir -p ~/EDIDreader && cd ~/EDIDreader
 git clone git@github.com:tko22/EDIDreader.git .
 ```
 1. Open Android Studio and open from source ~/edidreader <br>
