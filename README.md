@@ -7,10 +7,11 @@ To install the latest development version from source:
 mkdir -p ~/edidreader && cd ~/edidreader
 git clone git@github.com:tko22/EDIDreader.git .
 ```
-Open Android Studio and open from source ~/edidreader <br>
-create a run configuration of android app and everything as default <br>
-Run the app on the phone <br>
-for more information on running the app: https://developer.android.com/training/basics/firstapp/running-app.html
+1. Open Android Studio and open from source ~/edidreader <br>
+2. create a run configuration of android app and everything as default <br>
+3. Run the app on the phone <br>
+
+For more information on running the app: https://developer.android.com/training/basics/firstapp/running-app.html
 
 ### Requirements for installation
 Android Studio 2.3 https://developer.android.com/studio/index.html<br>
