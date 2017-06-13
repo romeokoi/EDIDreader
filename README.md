@@ -1,5 +1,5 @@
 # EDIDreader 
-android application that gets parsed EDID information from displays connected to a raspberry pi. User connects to a raspberry pi running the BLServer.py script and gets EDID information from raspberry pi, which parses the data and sends it to the phone. 
+An Android Application that gets parsed EDID displah information connected to a raspberry pi. User connects to a raspberry pi running the BLServer.py script and gets EDID info from raspberry pi, which parses the data and sends it to the phone. 
 
 ## Installation from Source 
 To install the latest development version from source:
