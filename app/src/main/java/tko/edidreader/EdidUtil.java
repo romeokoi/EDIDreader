@@ -4,7 +4,9 @@ package tko.edidreader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
-
+/*
+ignore
+ */
 public class EdidUtil {
 
     private byte[] edid; //128 bytes

@@ -1,5 +1,6 @@
 package tko.edidreader;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -8,9 +9,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -25,11 +30,15 @@ import android.widget.Toast;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -65,9 +74,11 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter mBluetoothAdapter;
 
     private ConnectedThread mConnectedThread;
+    private int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Setting up Toolbar and list
         setContentView(R.layout.activity_main);
         infoListView = (ListView) findViewById(R.id.edidInfoListView);
         adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,list);
@@ -91,21 +102,19 @@ public class MainActivity extends AppCompatActivity {
             phoneNumber = details.getString("phoneNumber",null);
         }
 
-        Log.i("debug",  android.os.Environment.getExternalStorageDirectory().getAbsolutePath());
-
-
         //Bluetooth stuff
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
+        //Getting bluetooth devices
         Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
         if(pairedDevices.size() > 0)
         {
             for(BluetoothDevice device : pairedDevices)
             {
-                if(device.getName().equals("raspberrypi"))
+                if(device.getName().equals("raspberrypi")) //find device named raspberrypi
                 {
                     Log.e("Raspberry pi",device.getName());
                     mDevice = device;
@@ -113,11 +122,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+        //Intent filters to check when device is disconnected
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
         filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
         filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         this.registerReceiver(mReceiver, filter);
+
+        //check and ask for permission to WRITE_EXTERNAL_STORAGE
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        }
+
     }
     @Override
     public void onResume() {
@@ -134,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 if(device.getName().equals("raspberrypi"))
                 {
-                    Log.e("Raspberry pi",device.getName());
+                    Log.e("Raspberry pi","Found "+device.getName());
                     mDevice = device;
                     break;
                 }
@@ -165,8 +184,9 @@ public class MainActivity extends AppCompatActivity {
             Log.i("error","Cant close socket");
         }
     }
-    /* initiates and displays listview with info in HashMap
-    * maybe create an object instead of using a map? */
+    /*
+    * initiates and displays listview with info in HashMap
+    */
     private void displayInformation(){
         map.put("Manufacturer ID","");
         map.put("Manufacturer","");
@@ -203,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
         infoListView.setAdapter(adapter);
     }
 
-    /* action performed when raw data menu item is pressed*/
+    /* action performed when raw data menu item is pressed */
     public void showRaw(MenuItem item){
         Log.i("debug","showRaw");
         Intent i = new Intent(this,SecondActivity.class);
@@ -224,6 +244,54 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /* Checks if external storage is available for read and write */
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+    /*
+        writes a new File with timestamp in name - edid in hex inside file
+     */
+    public void writeFile(){
+        if ( isExternalStorageWritable()){
+            //timestamp
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy-hh:mm");
+            String format = simpleDateFormat.format(new Date());
+
+            //make directory /storage/emulated/0/Documents/edid/
+            File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "edid");
+            if (!directory.exists()) {
+                Log.d("MAKE DIR", directory.mkdirs() + "");
+            }
+            Log.e("debug",directory.toString());
+
+            //create file and put rawedid in it
+            String filename = "edid"+format+".txt";
+            File newFile = new File(directory.getAbsolutePath(), filename);
+            try {
+                boolean isFileCreated = false;
+                if (!newFile.exists()){
+                    isFileCreated = newFile.createNewFile();
+                }
+                FileOutputStream f = new FileOutputStream(newFile);
+                FileWriter writer = new FileWriter(newFile);
+                writer.append(rawedid);
+                writer.flush();
+                writer.close();
+                Log.e("debug","saved file");
+                Toast.makeText(getApplicationContext(),"Saved File",Toast.LENGTH_SHORT).show();
+
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(),"Can't save File",Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+        }
+
+    }
+
     /* action when shareButton is clicked */
     public void shareInfo(View view) {
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
@@ -237,6 +305,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     /*
+        connect Button action
         Tag 1 - Connect
         Tag 0 - Disconnect
      */
@@ -257,11 +326,11 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 try {
                     mConnectedThread.cancel();
-                    Toast.makeText(getApplicationContext(), "Can't Connect", Toast.LENGTH_SHORT).show();
                 } catch (Exception ex) {
                     Log.e("debug", "Could not close the client socket", ex);
                 }
                 Log.e("debug", "cannot connect");
+                Toast.makeText(getApplicationContext(), "Can't Connect", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
                 return;
             }
@@ -282,9 +351,11 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-
-
     }
+    /*
+        getEDID button action - writes "getedid" and sends it
+        to the raspberry pi through mConnectedThread
+     */
     public void getEDID(View view) {
         String str = "getedid";
         byte[] send = str.getBytes();
@@ -302,6 +373,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+    /*
+        parses JSON string and gets the information sent from the raspberry pi
+     */
     public void putinfo(String str){
         try {
             JSONObject jsonObject = new JSONObject(str);
@@ -313,15 +387,18 @@ public class MainActivity extends AppCompatActivity {
             serialNumber = jsonObject.getString("serial_number_hex");
             rawedid = jsonObject.getString("raw");
             Log.e("debug","parsed json object");
+            if ( rawedid !=null){
+                writeFile();
+            }
+
 
         } catch (JSONException e){
             Log.e("error","can't parse json", e);
         }
         updateInformation();
 
-
     }
-    /* creates csv file*/
+    /* creates csv file - not complete*/
     private void makeFile() {
         try {
             String baseDir = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
@@ -347,7 +424,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    /*
+        Thread run when raspberry pi is connected
+        Continuously looks for data sent from raspberry pi - once data is delivered - Handler is called
+     */
     public class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
@@ -427,7 +507,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
+    /*
+        Handler that handles sending data to raspberry pi and recieved data
+     */
     private Handler mHandler = new Handler() {
 
         public void handleMessage(Message msg){
@@ -439,6 +521,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Can't get Json", Toast.LENGTH_SHORT).show();
                         Log.e("error", "not edid");
                     }
+                    //parse the json string
                     putinfo(readMsg);
                     break;
                 case MessageConstants.MESSAGE_WRITE:
@@ -453,12 +536,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
     };
+    /*
+        method called when raspberry pi disconnects
+     */
     public void disconnected(){
         Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_SHORT).show();
         connectButton.setText("Connect");
         findViewById(R.id.connectButton).setTag(1);
 
     }
+    /*
+        Checks when raspberry pi disconnects/connects
+     */
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -481,8 +570,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-
-
 
 }
 

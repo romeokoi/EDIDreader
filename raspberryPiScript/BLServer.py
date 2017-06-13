@@ -132,7 +132,6 @@ def connect():
         except (Exception):
             print "disconnected"
             client_sock.close()
-            sleep(1000);
             connect()
 
 

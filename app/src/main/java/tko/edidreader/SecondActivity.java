@@ -39,6 +39,9 @@ public class SecondActivity extends AppCompatActivity implements SettingsFragmen
     public String getdata(){
         return edid;
     }
+    /*
+        ignore
+     */
     public void getEmail(View view) {
         EditText edit = (EditText)findViewById(R.id.email_editText);
 
@@ -54,7 +57,9 @@ public class SecondActivity extends AppCompatActivity implements SettingsFragmen
                 InputMethodManager.HIDE_NOT_ALWAYS);
 
     }
-
+    /*
+        ignore
+     */
     public void getPhone(View view) {
         EditText edit = (EditText)findViewById(R.id.phone_editText);
 
