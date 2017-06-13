@@ -3,10 +3,14 @@ package tko.edidreader;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -31,6 +35,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_ENABLE_BT = 1;
@@ -39,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView infoListView;
     private ArrayList<String> list = new ArrayList<String>();
     private ArrayAdapter adapter;
-    private String id;
+    private String manu_id;
     private String manufacturer;
     private String productCode;
     private String serialNumber;
@@ -47,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private String week;
     public String email;
     public String phoneNumber;
+    public String rawedid;
+
     private Button connectButton;
 
     private static final UUID SerialPortServiceClass_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -54,13 +64,6 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothDevice mDevice = null;
     private BluetoothAdapter mBluetoothAdapter;
 
-    private Handler mHandler;
-    private interface MessageConstants {
-        public static final int MESSAGE_READ = 0;
-        public static final int MESSAGE_WRITE = 1;
-        public static final int MESSAGE_TOAST = 2;
-
-    }
     private ConnectedThread mConnectedThread;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("debug",  android.os.Environment.getExternalStorageDirectory().getAbsolutePath());
 
-        mHandler = new Handler();
+
         //Bluetooth stuff
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (!mBluetoothAdapter.isEnabled()) {
@@ -110,6 +113,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        this.registerReceiver(mReceiver, filter);
     }
     @Override
     public void onResume() {
@@ -178,17 +186,19 @@ public class MainActivity extends AppCompatActivity {
 
     /* updates the listview with new info*/
     private void updateInformation() {
-        map.put("Manufacturer ID",id);
+        map.put("Manufacturer ID",manu_id);
         map.put("Manufacturer",manufacturer);
         map.put("Manufacturer product code",productCode);
         map.put("Serial Number",serialNumber);
         map.put("Year of Manufacture",year);
         map.put("Week of Manufacture",week);
+        list.clear();
         for (Map.Entry<String, String> entry : map.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
             list.add(key + ": " + value);
         }
+
 
         infoListView.setAdapter(adapter);
     }
@@ -198,6 +208,8 @@ public class MainActivity extends AppCompatActivity {
         Log.i("debug","showRaw");
         Intent i = new Intent(this,SecondActivity.class);
         i.putExtra("fragType","raw");
+        i.putExtra("rawEDID",rawedid);
+
         startActivity(i);
     }
 
@@ -206,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("debug","showSettings");
         Intent i = new Intent(this,SecondActivity.class);
         i.putExtra("fragType","setting");
+
         startActivity(i);
 
 
@@ -237,14 +250,14 @@ public class MainActivity extends AppCompatActivity {
                 if (!mSocket.isConnected()) {
                     mSocket.connect();
 
-                    Toast.makeText(getApplicationContext(),"Connected",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Connected",Toast.LENGTH_SHORT).show();
                     connectButton.setText("Disconnect");
                     view.setTag(0);
                 }
             } catch (IOException e) {
                 try {
                     mConnectedThread.cancel();
-                    Toast.makeText(getApplicationContext(), "Can't Connect", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Can't Connect", Toast.LENGTH_SHORT).show();
                 } catch (Exception ex) {
                     Log.e("debug", "Could not close the client socket", ex);
                 }
@@ -260,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
         else {
             try {
                 mConnectedThread.cancel();
-                Toast.makeText(getApplicationContext(), "Can't Connect", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Can't Connect", Toast.LENGTH_SHORT).show();
                 connectButton.setText("Connect");
                 view.setTag(1);
             } catch (Exception ex) {
@@ -272,8 +285,42 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    public void getEDID(View view) {
+        String str = "getedid";
+        byte[] send = str.getBytes();
+        ConnectedThread r;
+        if (mConnectedThread != null) {
+            // Synchronize a copy of the ConnectedThread
+            synchronized (this) {
+                r = mConnectedThread;
+            }
+            Log.e("debug","sending edid");
+            r.write(send);
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "connect to raspberry pi first", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+    public void putinfo(String str){
+        try {
+            JSONObject jsonObject = new JSONObject(str);
+            week = jsonObject.getString("week");
+            manufacturer = jsonObject.getString("manufacture_name");
+            manu_id = jsonObject.getString("manufacture_id");
+            year = jsonObject.getString("year");
+            productCode = jsonObject.getString("manufacture_code_hex");
+            serialNumber = jsonObject.getString("serial_number_hex");
+            rawedid = jsonObject.getString("raw");
+            Log.e("debug","parsed json object");
+
+        } catch (JSONException e){
+            Log.e("error","can't parse json", e);
+        }
+        updateInformation();
 
 
+    }
     /* creates csv file*/
     private void makeFile() {
         try {
@@ -299,6 +346,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 
     public class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
@@ -380,6 +428,59 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private Handler mHandler = new Handler() {
+
+        public void handleMessage(Message msg){
+            switch (msg.what) {
+                case MessageConstants.MESSAGE_READ:
+                    byte[] readBuf = (byte[])msg.obj;
+                    String readMsg = new String(readBuf,0,msg.arg1);
+                    if (readMsg.equals("not edid")) {
+                        Toast.makeText(getApplicationContext(), "Can't get Json", Toast.LENGTH_SHORT).show();
+                        Log.e("error", "not edid");
+                    }
+                    putinfo(readMsg);
+                    break;
+                case MessageConstants.MESSAGE_WRITE:
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    String writeMsg = new String(writeBuf);
+
+                    break;
+                case MessageConstants.MESSAGE_TOAST:
+                    break;
+            }
+
+        }
+
+    };
+    public void disconnected(){
+        Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_SHORT).show();
+        connectButton.setText("Connect");
+        findViewById(R.id.connectButton).setTag(1);
+
+    }
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+               Log.e("debug","device found");
+            }
+            else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
+                Log.e("debug","device connected");
+            }
+
+            else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
+               Log.e("debug","device is about to disconnect");
+            }
+            else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
+                Log.e("debug", "device disconnected");
+                disconnected();
+            }
+        }
+    };
 
 
 

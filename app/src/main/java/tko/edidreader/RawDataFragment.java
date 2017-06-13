@@ -7,12 +7,13 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 public class RawDataFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-
+    private String edid;
     public RawDataFragment() {
         // Required empty public constructor
     }
@@ -27,8 +28,13 @@ public class RawDataFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        SecondActivity activity = (SecondActivity) getActivity();
+        edid = activity.getdata();
+        View view = inflater.inflate(R.layout.fragment_raw_data, container, false);
+        TextView rawdatatextview = (TextView) view.findViewById(R.id.rawDataTextView);
+        rawdatatextview.setText(edid);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_raw_data, container, false);
+        return view;
 
     }
 

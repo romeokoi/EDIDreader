@@ -1,5 +1,6 @@
 package tko.edidreader;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -8,10 +9,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class SecondActivity extends AppCompatActivity implements SettingsFragment.OnFragmentInteractionListener,
         RawDataFragment.OnFragmentInteractionListener {
-
+    private String edid;
+    private TextView rawdatatextview;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,11 +28,17 @@ public class SecondActivity extends AppCompatActivity implements SettingsFragmen
                     replace(R.id.fragment_place,new SettingsFragment()).commit();
         }
         else if (message.equals("raw")) {
+            edid = bundle.getString("rawEDID");
+            RawDataFragment frag = new RawDataFragment();
+            
             getFragmentManager().beginTransaction().
-                    replace(R.id.fragment_place,new RawDataFragment()).commit();
+                    replace(R.id.fragment_place,frag).commit();
         }
-    }
 
+    }
+    public String getdata(){
+        return edid;
+    }
     public void getEmail(View view) {
         EditText edit = (EditText)findViewById(R.id.email_editText);
 
