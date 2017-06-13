@@ -71,8 +71,10 @@ discoverable on
 The pi will start scanning, look for your android phone’s name. Note: Your android device must have bluetooth discoverable “on”
  
 When the devices pop up on either the android device of raspberry pi:
-```bash pair [MAC ADDRESS YOU COPY FROM THE SCAN]
-``` OR you click the “raspberrypi” on your android device
+```bash 
+pair [MAC ADDRESS YOU COPY FROM THE SCAN]
+``` 
+OR you click the “raspberrypi” on your android device
  
 A popup will come up on your android device and you click yes
 On your pi, 
