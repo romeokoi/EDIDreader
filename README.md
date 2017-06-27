@@ -6,7 +6,7 @@ Note: Manufacture Code/Model Id and Serial Number are in hex<br>
 To install the latest development version from source:
 ```bash
 mkdir -p ~/EDIDreader && cd ~/EDIDreader
-git clone git@github.com:tko22/EDIDreader.git .
+git clone https://github.com/tko22/EDIDreader.git
 ```
 1. Open Android Studio and open from source ~/edidreader <br>
 2. create a run configuration of android app and everything as default <br>
