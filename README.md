@@ -106,6 +106,14 @@ sudo nano /etc/rc.local
 Right on top of exit 0 write: python /home/pi/BLserver.py &
 Exit out and save: Control-X, Y, Enter
  
+ 
+Edit "/lib/systemd/system/bluetooth.service" <br>
+and change line: "ExecStart=/usr/lib/bluetooth/bluetoothd"<br>
+to: "ExecStart=/usr/lib/bluetooth/bluetoothd --compat"
+
+
+
+ 
 ### About
 
 #### Author
