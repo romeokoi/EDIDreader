@@ -105,7 +105,7 @@ Make script execute on start:
 ```bash
 sudo nano /etc/rc.local
 ```
-Right on top of exit 0 write: python /home/pi/BLserver.py &
+Right on top of exit 0 write: python /home/pi/BLServer.py &
 Exit out and save: Control-X, Y, Enter
  
  
