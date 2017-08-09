@@ -50,6 +50,16 @@ sudo service bluetooth status
 ```
 status should say “Running”:<br>
 
+
+Edit "/lib/systemd/system/bluetooth.service" <br>
+and change line: "ExecStart=/usr/lib/bluetooth/bluetoothd"<br>
+to: "ExecStart=/usr/lib/bluetooth/bluetoothd -compat"
+
+```bash
+sudo sdptool add SP
+sudo reboot
+```
+
 To permanently set the bluetooth name of the pi to "raspberrypi":
 ```bash
 sudo nano /etc/machine-info
@@ -109,10 +119,6 @@ Right on top of exit 0 write: python /home/pi/BLServer.py &
 Exit out and save: Control-X, Y, Enter
  
  
-Edit "/lib/systemd/system/bluetooth.service" <br>
-and change line: "ExecStart=/usr/lib/bluetooth/bluetoothd"<br>
-to: "ExecStart=/usr/lib/bluetooth/bluetoothd -compat"
-
 
 
  
