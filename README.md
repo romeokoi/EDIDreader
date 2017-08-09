@@ -111,7 +111,7 @@ Exit out and save: Control-X, Y, Enter
  
 Edit "/lib/systemd/system/bluetooth.service" <br>
 and change line: "ExecStart=/usr/lib/bluetooth/bluetoothd"<br>
-to: "ExecStart=/usr/lib/bluetooth/bluetoothd --compat"
+to: "ExecStart=/usr/lib/bluetooth/bluetoothd -compat"
 
 
 
