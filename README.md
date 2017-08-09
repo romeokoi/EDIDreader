@@ -56,8 +56,8 @@ and change line: "ExecStart=/usr/lib/bluetooth/bluetoothd"<br>
 to: "ExecStart=/usr/lib/bluetooth/bluetoothd -compat"
 
 ```bash
-sudo sdptool add SP
 sudo reboot
+sudo sdptool add SP
 ```
 
 To permanently set the bluetooth name of the pi to "raspberrypi":
