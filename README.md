@@ -30,7 +30,7 @@ To perform a headless setup of Raspberry pi zero w in Windows:https://hackernoon
 Then install image to sd card: https://www.raspberrypi.org/documentation/installation/installing-images/README.md<br>
 ```bash
 ssh pi@raspberrypi.local
-pi@raspberrypi.local's password: rasbperry
+pi@raspberrypi.local's password: raspberry
 ```
 Update and upgrade installed packages:
 ```bash
