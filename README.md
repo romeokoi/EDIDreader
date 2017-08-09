@@ -23,8 +23,10 @@ this python script must be ran in the raspberry pi. It acts as a bluetooth serve
 
 
 ## Raspberry Pi Configuration - as of Linux raspberrypi 4.9.31+ #1005
-To perform a headless setup of Raspberry pi zero w: http://blog.remmelt.com/2017/03/20/easy-headless-setup-for-raspberry-pi-zero-w-on-osx/<br>
- 
+To perform a headless setup of Raspberry pi zero w in Mac OS X: http://www.remmelt.com/post/easy-headless-setup-for-raspberry-pi-zero-w-on-osx/<br>
+
+To perform a headless setup of Raspberry pi zero w in Windows:https://hackernoon.com/raspberry-pi-headless-install-462ccabd75d0>br>
+
 Then install image to sd card: https://www.raspberrypi.org/documentation/installation/installing-images/README.md<br>
 ```bash
 ssh pi@raspberrypi.local
